@@ -5,8 +5,8 @@ const columnsToBeInverted = [4];
 let currentMove = 4;
 let addedMove = 8;
 let ringsLeft = 6;
-let numberOfEights = 0;
-let numberOfFours = 1;
+let numberOfEights = 1;
+let numberOfFours = 2;
 const firstTowerRings = [];
 const secondTowerRings = [];
 const thirdTowerRings = [];
@@ -19,18 +19,17 @@ const populateFirstTower = (tower) => {
 
 const populateColumnsToBeInverted = (arr, currentMove, addedMove) => {
     
-    for (let i = 1; i <= totalMoves + 1; i+=addedMove) {
+    for (let i = 0; i <= totalMoves + 1; i+=addedMove) {
         
         addedMove = 8;
-        numberOfEights++;
         for (let i = 1; i <= numberOfEights; i++) {
             currentMove += addedMove;
             arr.push(currentMove);
         }
+        numberOfEights = 3;
         
         if (addedMove === 8) {
             addedMove = 4;
-            numberOfFours++;
             for (let i = 1; i <= numberOfFours; i++) {
                 currentMove += addedMove;
                 arr.push(currentMove);
@@ -44,10 +43,6 @@ const calculateCurrentMoves = () => {
     const towerMoves = [];
     let counter = 0;
 
-    if (moves > totalMoves) {
-        return towerMoves;
-    }
-
     moves += 2;
     if (columnsToBeInverted.includes(moves)) {
         towerMoves.push([counter, counter + 1]);
@@ -56,7 +51,7 @@ const calculateCurrentMoves = () => {
         towerMoves.push([counter, counter + 1]);
         towerMoves.push([counter, counter + 2]);
     }
-   
+
     return towerMoves;
 }
 
@@ -73,7 +68,7 @@ const recursive = () => {
     populateFirstTower(firstTowerRings);
     populateColumnsToBeInverted(columnsToBeInverted, currentMove, addedMove);
 
-    while (moves <= totalMoves) {
+    while (moves <= totalMoves + 1) {
         hanoiTowers(firstTowerRings, secondTowerRings, thirdTowerRings);
         hanoiTowers(secondTowerRings, thirdTowerRings, firstTowerRings);
         hanoiTowers(thirdTowerRings, firstTowerRings, secondTowerRings);
