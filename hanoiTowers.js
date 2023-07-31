@@ -4,12 +4,12 @@ let moves = 0;
 const columnsToBeInverted = [4];
 let currentMove = 4;
 let addedMove = 8;
-let ringsLeft = 6;
 let numberOfEights = 1;
 let numberOfFours = 2;
 const firstTowerRings = [];
 const secondTowerRings = [];
 const thirdTowerRings = [];
+const towers = [firstTowerRings, secondTowerRings, thirdTowerRings];
 
 const populateFirstTower = (tower) => {
     for (let i = 1; i <= totalNumOfRings; i++) {
@@ -20,7 +20,7 @@ const populateFirstTower = (tower) => {
 const populateColumnsToBeInverted = (arr, currentMove, addedMove) => {
     
     for (let i = 0; i <= totalMoves + 1; i+=addedMove) {
-        
+
         addedMove = 8;
         for (let i = 1; i <= numberOfEights; i++) {
             currentMove += addedMove;
@@ -43,16 +43,24 @@ const calculateCurrentMoves = () => {
     const towerMoves = [];
     let counter = 0;
 
-    moves += 2;
-    if (columnsToBeInverted.includes(moves)) {
-        towerMoves.push([counter, counter + 1]);
-        towerMoves.push([counter + 2, counter]);
-    } else {
-        towerMoves.push([counter, counter + 1]);
-        towerMoves.push([counter, counter + 2]);
+    if (moves < (totalMoves - 1)) {
+        moves += 2;
+        if (columnsToBeInverted.includes(moves)) {
+            towerMoves.push([counter, counter + 1]);
+            towerMoves.push([counter + 2, counter]);
+        } else {
+            towerMoves.push([counter, counter + 1]);
+            towerMoves.push([counter, counter + 2]);
+        }
+        return towerMoves;
     }
 
-    return towerMoves;
+    if (moves === (totalMoves - 1)) {
+        towerMoves.push([counter, counter + 1]);
+        moves++;
+        return towerMoves;
+    }
+    
 }
 
 const hanoiTowers = (...args/*firstTower, secondTower, thirdTower*/) => {
@@ -68,12 +76,12 @@ const recursive = () => {
     populateFirstTower(firstTowerRings);
     populateColumnsToBeInverted(columnsToBeInverted, currentMove, addedMove);
 
-    while (moves <= totalMoves + 1) {
-        hanoiTowers(firstTowerRings, secondTowerRings, thirdTowerRings);
-        hanoiTowers(secondTowerRings, thirdTowerRings, firstTowerRings);
-        hanoiTowers(thirdTowerRings, firstTowerRings, secondTowerRings);
+    while (moves < totalMoves) {
+        hanoiTowers(towers[0], towers[1], towers[2]);
+        const swappedTower = towers.shift();
+        towers.push(swappedTower);
     }
-    
+    console.log(firstTowerRings, secondTowerRings, thirdTowerRings);
 }
 
 recursive();
